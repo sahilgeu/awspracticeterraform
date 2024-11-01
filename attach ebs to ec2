@@ -1,0 +1,21 @@
+provider "aws" {
+region = "ap-south-1"
+}
+
+
+resource "aws_ebs_volume" "myfirst" {
+
+
+availability_zone = "ap-south-1"
+size = 50
+type ="gp2"
+encrypted = true
+}
+
+
+resource "aws_volume_attachmnet" "nsama" {
+
+device_name = "/dev/xvdf"
+volume_id = aws_ebs-volume.name.id
+instance_id = aws_instance_name>id
+}
