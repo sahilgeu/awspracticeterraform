@@ -1,0 +1,60 @@
+
+povider "aws" {
+  region = "ap-south-1"
+ }
+ 
+ 
+resource "aws_vpc" "myfirstvpc" {
+cidr_blocks = "10.0.0.0/23"
+}
+
+
+resource "aws_subnet" "mypublicsubnet" {
+  vpc_id = aws_vpc.myfirstvpc.id
+  cidr_blocks = "10.0.0.0/26"
+} 
+
+
+resource "aws_subnet" "myprivatesubnet" {
+
+  vpc_id = aws_vpc.myfirstvpc.id
+  cidr_blocks = "10.0.0.0/28"
+} 
+
+
+
+resource "aws_internet_gateway" "mysha" {
+ vpc_id = aws_vpc.myfurst.id
+}
+
+
+
+resource "aws_internet_gateway" "nams" {
+vpc_id = aws_vpc.oo.id
+}
+
+
+
+
+resource "aws_route_table" "mdsjhj" {
+vpc_id = aws_vpc.ksk.id
+route {
+       cidr_blocks = "0.0.0.0/0"
+       gateway_id = aws_internet_gateway.nam.id
+}
+
+
+
+resource "aws_route_table" "myfirsttable" {
+vpc.id = awssa
+route {
+        cidr_blocks = "0.0.0.0/0"
+        gateway.id = "aws_internet_gateway.name.id"
+}
+
+
+resource "aws_toute_tabel_associaona" "anem" {
+subnet.id = aws_subnet.name.id
+route_table.id = aws_route_table.name.id
+}
+
