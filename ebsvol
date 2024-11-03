@@ -1,0 +1,47 @@
+provider "aws" {
+region = "ap-south-1"
+}
+
+resource "aws_ebs_volume" "myvol1" {
+availability_zone = "ap-south-1a"
+size = 40
+encrypted = "true"
+type = "gp3"
+}
+
+resource "aws_instance" "myec21" {
+ami = ""
+instance_type = "t2.micro"
+}
+
+resource "aws_volume_attachment" "" [
+device_name = "/dev/xvda"
+volume_id =  aws_volume.name.id
+instance_id = aws_instance.name.id
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
