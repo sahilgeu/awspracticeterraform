@@ -1,0 +1,73 @@
+
+provider "aws" {
+   region = "ap-south-1"
+}
+
+
+resource "aws_vpc" "name" {
+   cidr_blocks = ["10.0.0.0/16"]
+}
+
+
+resource "aws_subnet" "mypub" {
+   vpc_id = aws_vpc.name.id
+   cidr_blocks = ["10.0.0.0/24"]
+   availabity_zone = "ap-south-2"
+}
+
+
+resource "aws_subnet" "myprivatesubnet" {
+    vpc_id = aws_vpc.name.id
+    cidr_block = ["10.0.0.0/28"]
+    availabilioty_zone = "ap-south-3"
+}
+
+resource "aws_security_group" "mjkhs"{
+ vpc_id = aws_vpc.name.id
+ingress {
+   from_port = 22
+   to_port = 22
+   protocol = "tcp"
+   cidr_blocks = ["10.0.0.0/24]
+}
+egress {
+  from_port = 0
+  to_port = 0
+  protocol = "-1"
+  cidr_blocks = ["10.0.0.0/28"]
+}
+
+
+resource "aws_instance" "name" {
+  subnet_id = aws_subnet.naem.id
+  vpc_security_group_ids = [aws_security_group.name.id]
+  instance_type = "t2.micro"
+   ami ""
+}
+
+
+   
+  
+
+
+
+provider "aws" {
+region = "ap-south-1"
+access_key = ""
+secret_key = ""
+}
+
+
+resource "aws_vpc" {
+ cidr_blokcs = ["10.0.0.0/24"]
+}
+
+# public subnet
+
+resource "aws_subnet" "pub1" {
+  cidr_block = ["10.0.0.1/24"]
+  vpc_id = aws_vpc.name.id
+  availabilit_zone = ap-south-1"
+}
+
+
