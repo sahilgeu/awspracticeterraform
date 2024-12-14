@@ -1,0 +1,62 @@
+variable "vpc_cidr" {
+    description = "this is cidr block for vpc"
+    type = string
+}
+
+variable "pub_subnet" {
+    description = "this is cidr for public subnet"
+    type = string
+}
+
+variable "priv_subnet" {
+    description = "this is cidr for private subnet"
+    type = string
+}
+
+variable "pub_az" {
+    description = "this is availability zone for public subnet"
+    type = string
+}
+
+variable "priv_az" {
+    description = "this is private subnet az"
+    type = string
+
+}
+
+variable "route_cidr" {
+    description = "this is the cidr block for route table"
+    type = string
+}
+
+variable "ingress_rule" {
+    description = " rules for ingess"
+    type = list(object({
+        from_port = number
+        to_port = number
+        protocol = string
+        cidr_blocks = list(string)
+    }))
+}
+
+variable "egress_rule" {
+    description = "this is egress rules"
+    type = list(object({
+        from_port = number
+        to_port = number
+        protocol = string
+        cidr_blocks = list(string)
+}))
+}
+
+
+variable "instance_type" {
+    description = "specify instance"
+    type = string
+}
+
+variable "ami_id" {
+    description = "specify ami-id"
+    type = string
+}
+
