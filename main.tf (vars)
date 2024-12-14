@@ -1,0 +1,58 @@
+provider "aws" {
+    region = "ap-south-1"
+    }
+resource "aws_vpc" "myvpc" {
+    cidr_block = var.vpc_cidr
+}
+
+resource "aws_subnet" "sub-pub" {
+    cidr_block = var.pub_subnet
+    vpc_id = aws_vpc.myvpc.id
+    availability_zone = var.pub_az
+    map_public_ip_on_launch = true
+}
+
+resource "aws_subnet" "my-priv" {
+    cidr_block = var.priv_subnet
+    vpc_id = aws_vpc.myvpc.id
+    availability_zone = var.priv_az
+} 
+
+resource "aws_internet_gateway" "ig1" {
+    vpc_id = aws_vpc.myvpc.id
+}
+
+resource "aws_route_table" "myrt" {
+    vpc_id = aws_vpc.myvpc.id
+}
+
+resource "aws_route" "myrt1" {
+    route_table_id = aws_route_table.myrt.id
+    destination_cidr_block = var.route_cidr
+    gateway_id = aws_internet_gateway.ig1.id
+}
+
+resource "aws_security_group" "sg1" {
+    vpc_id = aws_vpc.myvpc.id
+    ingress {
+        from_port = var.ingress_rule[0].from_port
+        to_port = var.ingress_rule[0].to_port
+        protocol = var.ingress_rule[0].protocol
+        cidr_blocks = var.ingress_rule[0].cidr_blocks
+    }
+
+    egress {
+        from_port = var.egress_rule[0].from_port
+        to_port = var.egress_rule[0].to_port
+        protocol = var.egress_rule[0].protocol
+        cidr_blocks = var.egress_rule[0].cidr_blocks
+    }
+
+}
+
+resource "aws_instance" "myec2" {
+    ami = var.ami_id
+    instance_type = var.instance_type
+    subnet_id = aws_subnet.sub-pub.id
+    vpc_security_group_ids = [aws_security_group.sg1.id]
+}
