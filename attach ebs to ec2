@@ -5,6 +5,7 @@ provider "aws" {
 resource "aws_instance" "myec2" {
     ami = ""
     instance_type = var.instance_type
+    availability_zone = same as ebs
 
 }
 
