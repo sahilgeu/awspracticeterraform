@@ -1,0 +1,91 @@
+provider "aws" {
+    region = "ap-south-1"
+}
+
+resource "aws_vpc" "myvpc" {
+    cidr_block = "10.0.0.0/16"
+}
+
+resource "aws_subnet" "mysub1" {
+    cidr_block = "10.0.1.0/24"
+    vpc_id = aws_vpc.myvpc.id
+    availability_zone = "ap-south-1a"
+    map_publci_ip_on_launch = true
+}
+
+resource "aws_subnet" "mypriv" {
+    cidr_block = "10.0.2.0/24"
+    availability_zone = "ap-south-1b"
+    vpc_id = aws_vpc.myvpc.id
+}
+
+resource "aws_inernet_gateway" "igw1" {
+    vpc_id = aws_vpc.myvpc.id
+}
+
+resource "aws_route_table" "rt" {
+    vpc_id = aws_vpc.myvpc.id
+}
+
+resource "aws_route" "rt1" {
+    route_table = aws_route_table.rt.id
+    destination_cidr_block = "0.0.0.0/0"
+    internet_gateway_id = aws_inernet_gateway.igw1.id
+}
+
+resource "aws_route_table_association" "rt3" {
+    route_table = aws_route_table.rt.id
+    subnet_id = aws_subnet.mysub1.id
+}
+
+resource "aws_eip" "nt" {
+    vpc = true
+
+}
+
+resource "aws_nat_gateway" "nt1" {
+    subnet_id = aws_subnet.mypriv.id
+    allocation_id = aws_eip.nt.id
+}
+
+resource "aws_route_table" "myrt" {
+    vpc_id = aws_vpc.myvpc.id
+}
+
+resource "aws_route" "myrt1" {
+    route_table_id = aws_route_table.myrt.id
+    destination_cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nt1.id
+}
+
+resource "aws_route_table_association" "myrt2" {
+    subnet_id = aws_subnet.mypriv.id
+    route_table_id = aws_route_table.myrt.id
+}
+
+resource "aws_security_group" "mysg1" {
+    vpc_id = aws_vpc.myvpc.id
+
+    ingress {
+        
+        from_port = 22
+        to_port = 22
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
+resource "aws_instance" "myec2" {
+    ami = "ami-0614680123427b75e"
+    instance_type = "t2.micro"
+    vpc_security_group = [aws_security_group.mysg1.id]
+    subnet_id = aws_subnet.mysub1.id
+}
+
